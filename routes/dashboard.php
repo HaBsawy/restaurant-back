@@ -1,9 +1,10 @@
 <?php
 
+use App\Helper\ResponseHelper;
 use App\Http\Controllers\Dashboard\AuthController;
 use App\Http\Controllers\Dashboard\CategoryController;
 use App\Http\Controllers\Dashboard\ProductController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Dashboard\SizeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -37,13 +38,21 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         });
     Route::delete('products/{product}/images/{image}', [ProductController::class, 'destroyImage'])
         ->name('products.images.destroy')->missing(function () {
-            return \App\Helper\ResponseHelper::notFound();
+            return ResponseHelper::notFound();
+        })->scopeBindings();
+    Route::put('products/{product}/sizes/{size}/change-status', [SizeController::class, 'changeStatus'])
+        ->name('products.sizes.changeStatus')->missing(function () {
+            return ResponseHelper::notFound();
         })->scopeBindings();
 
     Route::apiResource('categories', CategoryController::class)->missing(function () {
-        return \App\Helper\ResponseHelper::notFound();
+        return ResponseHelper::notFound();
     });
     Route::apiResource('products', ProductController::class)->missing(function () {
-        return \App\Helper\ResponseHelper::notFound();
+        return ResponseHelper::notFound();
     });
+    Route::apiResource('products.sizes', SizeController::class)
+        ->missing(function () {
+            return ResponseHelper::notFound();
+        })->except('show');
 });

@@ -35,9 +35,6 @@ class ProductTest extends TestCase
             'description_ar'        => 'فطيرة مشكل جبن',
             'product_main_image'    => $main_image,
             'product_images'        => [$image1, $image2],
-            'price'                 => 100,
-            'has_discount'          => 1,
-            'discount'              => 5,
             'active'                => 1,
         ];
 
@@ -199,42 +196,6 @@ class ProductTest extends TestCase
             );
     }
 
-    public function test_store_without_price_parameter()
-    {
-        $response = $this->actingAs($this->user)
-            ->postJson($this->url, $this->data(['price' => '']));
-        $response->assertStatus(422)
-            ->assertJson($this->validationError('The price field is required.'));
-    }
-
-    public function test_store_with_non_numeric_price_parameter()
-    {
-        $response = $this->actingAs($this->user)
-            ->postJson($this->url, $this->data(['price' => 'test']));
-        $response->assertStatus(422)
-            ->assertJson($this->validationError('The price must be a number.'));
-    }
-
-    public function test_store_with_negative_price_parameter()
-    {
-        $response = $this->actingAs($this->user)
-            ->postJson($this->url, $this->data(['price' => -50]));
-        $response->assertStatus(422)
-            ->assertJson(
-                $this->validationError('The price must be between 0 and 999999.99.')
-            );
-    }
-
-    public function test_store_with_big_price_parameter()
-    {
-        $response = $this->actingAs($this->user)
-            ->postJson($this->url, $this->data(['price' => 1000000]));
-        $response->assertStatus(422)
-            ->assertJson(
-                $this->validationError('The price must be between 0 and 999999.99.')
-            );
-    }
-
     public function test_store_without_main_image_parameter()
     {
         $response = $this->actingAs($this->user)
@@ -281,62 +242,6 @@ class ProductTest extends TestCase
             ->postJson($this->url, $this->data(['product_images' => [$image, $pdf]]));
         $response->assertStatus(422)
             ->assertJson($this->validationError('The product_images.1 must be an image.'));
-    }
-
-    public function test_store_without__parameter()
-    {
-        $response = $this->actingAs($this->user)
-            ->postJson($this->url, $this->data(['has_discount' => '']));
-        $response->assertStatus(201)->assertJson([
-            'msg'           => "Product is created successfully",
-            'isSuccess'     => true,
-            'statusCode'    => 201,
-//            'payload'       => null
-        ]);
-    }
-
-    public function test_store_with_invalid_has_discount_parameter()
-    {
-        $response = $this->actingAs($this->user)
-            ->postJson($this->url, $this->data(['has_discount' => 'test']));
-        $response->assertStatus(422)
-            ->assertJson($this->validationError('The selected has discount is invalid.'));
-    }
-
-    public function test_store_without_discount_parameter()
-    {
-        $response = $this->actingAs($this->user)
-            ->postJson($this->url, $this->data(['discount' => '']));
-        $response->assertStatus(201)->assertJson([
-            'msg'           => "Product is created successfully",
-            'isSuccess'     => true,
-            'statusCode'    => 201,
-//            'payload'       => null
-        ]);
-    }
-
-    public function test_store_with_invalid_discount_parameter()
-    {
-        $response = $this->actingAs($this->user)
-            ->postJson($this->url, $this->data(['discount' => 'test']));
-        $response->assertStatus(422)
-            ->assertJson($this->validationError('The discount must be a number.'));
-    }
-
-    public function test_store_with_negative_discount_parameter()
-    {
-        $response = $this->actingAs($this->user)
-            ->postJson($this->url, $this->data(['discount' => -5]));
-        $response->assertStatus(422)
-            ->assertJson($this->validationError('The discount must be between 0 and 100.'));
-    }
-
-    public function test_store_with_big_discount_parameter()
-    {
-        $response = $this->actingAs($this->user)
-            ->postJson($this->url, $this->data(['discount' => 150]));
-        $response->assertStatus(422)
-            ->assertJson($this->validationError('The discount must be between 0 and 100.'));
     }
 
     public function test_store_without_active_parameter()
@@ -535,54 +440,6 @@ class ProductTest extends TestCase
             );
     }
 
-    public function test_update_without_price_parameter()
-    {
-        $response = $this->actingAs($this->user)
-            ->putJson($this->url . '/' . $this->product->id, $this->data([
-                'category_id' => '',
-                'price' => ''
-            ]));
-        $response->assertStatus(422)
-            ->assertJson($this->validationError('The price field is required.'));
-    }
-
-    public function test_update_with_non_numeric_price_parameter()
-    {
-        $response = $this->actingAs($this->user)
-            ->putJson($this->url . '/' . $this->product->id, $this->data([
-                'category_id' => '',
-                'price' => 'test'
-            ]));
-        $response->assertStatus(422)
-            ->assertJson($this->validationError('The price must be a number.'));
-    }
-
-    public function test_update_with_negative_price_parameter()
-    {
-        $response = $this->actingAs($this->user)
-            ->putJson($this->url . '/' . $this->product->id, $this->data([
-                'category_id' => '',
-                'price' => -50
-            ]));
-        $response->assertStatus(422)
-            ->assertJson(
-                $this->validationError('The price must be between 0 and 999999.99.')
-            );
-    }
-
-    public function test_update_with_big_price_parameter()
-    {
-        $response = $this->actingAs($this->user)
-            ->putJson($this->url . '/' . $this->product->id, $this->data([
-                'category_id' => '',
-                'price' => 1000000
-            ]));
-        $response->assertStatus(422)
-            ->assertJson(
-                $this->validationError('The price must be between 0 and 999999.99.')
-            );
-    }
-
     public function test_update_without_main_image_parameter()
     {
         $response = $this->actingAs($this->user)
@@ -648,80 +505,6 @@ class ProductTest extends TestCase
             ]));
         $response->assertStatus(422)
             ->assertJson($this->validationError('The product_images.1 must be an image.'));
-    }
-
-    public function test_update_without_has_discount_parameter()
-    {
-        $response = $this->actingAs($this->user)
-            ->putJson($this->url . '/' . $this->product->id, $this->data([
-                'category_id' => '',
-                'has_discount' => ''
-            ]));
-        $response->assertStatus(202)->assertJson([
-            'msg'           => "Product is updated successfully",
-            'isSuccess'     => true,
-            'statusCode'    => 202,
-            'payload'       => true
-        ]);
-    }
-
-    public function test_update_with_invalid_has_discount_parameter()
-    {
-        $response = $this->actingAs($this->user)
-            ->putJson($this->url . '/' . $this->product->id, $this->data([
-                'category_id' => '',
-                'has_discount' => 'test'
-            ]));
-        $response->assertStatus(422)
-            ->assertJson($this->validationError('The selected has discount is invalid.'));
-    }
-
-    public function test_update_without_discount_parameter()
-    {
-        $response = $this->actingAs($this->user)
-            ->putJson($this->url . '/' . $this->product->id, $this->data([
-                'category_id' => '',
-                'discount' => ''
-            ]));
-        $response->assertStatus(202)->assertJson([
-            'msg'           => "Product is updated successfully",
-            'isSuccess'     => true,
-            'statusCode'    => 202,
-            'payload'       => true
-        ]);
-    }
-
-    public function test_update_with_invalid_discount_parameter()
-    {
-        $response = $this->actingAs($this->user)
-            ->putJson($this->url . '/' . $this->product->id, $this->data([
-                'category_id' => '',
-                'discount' => 'test'
-            ]));
-        $response->assertStatus(422)
-            ->assertJson($this->validationError('The discount must be a number.'));
-    }
-
-    public function test_update_with_negative_discount_parameter()
-    {
-        $response = $this->actingAs($this->user)
-            ->putJson($this->url . '/' . $this->product->id, $this->data([
-                'category_id' => '',
-                'discount' => -5
-            ]));
-        $response->assertStatus(422)
-            ->assertJson($this->validationError('The discount must be between 0 and 100.'));
-    }
-
-    public function test_update_with_big_discount_parameter()
-    {
-        $response = $this->actingAs($this->user)
-            ->putJson($this->url . '/' . $this->product->id, $this->data([
-                'category_id' => '',
-                'discount' => 150
-            ]));
-        $response->assertStatus(422)
-            ->assertJson($this->validationError('The discount must be between 0 and 100.'));
     }
 
     public function test_update_without_active_parameter()

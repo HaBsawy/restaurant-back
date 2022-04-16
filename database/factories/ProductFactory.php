@@ -19,13 +19,12 @@ class ProductFactory extends Factory
     {
         $categoryIds = Category::all()->pluck('id')->toArray();
         return [
-            'category_id'       => $this->faker->randomElement($categoryIds),
+            'category_id'       => $categoryIds ?
+                $this->faker->randomElement($categoryIds) : Category::factory()->create(),
             'name_en'           => $this->faker->sentence(6),
             'name_ar'           => $this->faker->sentence(6),
             'description_en'    => $this->faker->realText(2000),
             'description_ar'    => $this->faker->realText(2000),
-            'price'             => $this->faker->randomNumber(6),
-            'discount'          => $this->faker->randomElement([0,5,10,15,20]),
             'active'            => $this->faker->boolean,
         ];
     }

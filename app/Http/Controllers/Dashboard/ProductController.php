@@ -19,7 +19,7 @@ class ProductController extends Controller
      *
      * @return JsonResponse
      */
-    public function index()
+    public function index(): JsonResponse
     {
         return ResponseHelper::make(ProductService::index());
     }
@@ -30,7 +30,7 @@ class ProductController extends Controller
      * @param ProductRequest $request
      * @return JsonResponse
      */
-    public function store(ProductRequest $request)
+    public function store(ProductRequest $request): JsonResponse
     {
         $product = ProductService::create($request);
         $directory = 'products/' . $product['id'];
@@ -53,7 +53,7 @@ class ProductController extends Controller
      * @param Product $product
      * @return JsonResponse
      */
-    public function show(Product $product)
+    public function show(Product $product): JsonResponse
     {
         return ResponseHelper::make($product);
     }
@@ -65,7 +65,7 @@ class ProductController extends Controller
      * @param Product $product
      * @return JsonResponse
      */
-    public function update(ProductRequest $request, Product $product)
+    public function update(ProductRequest $request, Product $product): JsonResponse
     {
         if (ProductService::update($request, $product)) {
             $directory = 'products/' . $product['id'];
@@ -86,10 +86,13 @@ class ProductController extends Controller
             if ($request->file('product_images')) {
                 $this->uploadImages($product, $directory, $request->file('product_images'));
             }
+
+            return ResponseHelper::make(true,
+                'Product is updated successfully', true, 202);
         }
 
-        return ResponseHelper::make(true,
-            'Product is updated successfully', true, 202);
+        return ResponseHelper::make(false,
+            'Something went wrong', false, 500);
     }
 
     /**
@@ -98,15 +101,19 @@ class ProductController extends Controller
      * @param Product $product
      * @return JsonResponse
      */
-    public function destroy(Product $product)
+    public function destroy(Product $product): JsonResponse
     {
         if (ProductService::delete($product)) {
             $product->main_image()->delete();
             $product->images()->delete();
             UploadHelper::deleteDirectory('products/' . $product['id']);
+
+            return ResponseHelper::make(true,
+                'Product is deleted successfully', true, 202);
         }
-        return ResponseHelper::make(true,
-            'Product is deleted successfully', true, 202);
+
+        return ResponseHelper::make(false,
+            'Something went wrong', false, 500);
     }
 
     /**
@@ -115,7 +122,7 @@ class ProductController extends Controller
      * @param Product $product
      * @return JsonResponse
      */
-    public function changeStatus(Product $product)
+    public function changeStatus(Product $product): JsonResponse
     {
         return ResponseHelper::make($product->changeStatus(),
             'Product status is changed successfully', true, 202);
@@ -128,7 +135,7 @@ class ProductController extends Controller
      * @param Image $image
      * @return JsonResponse
      */
-    public function destroyImage(Product $product, Image $image)
+    public function destroyImage(Product $product, Image $image): JsonResponse
     {
         UploadHelper::delete($image->getAttributes()['path']);
         $image->delete();

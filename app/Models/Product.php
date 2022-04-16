@@ -48,16 +48,11 @@ class Product extends Model
     use HasFactory;
 
     protected $fillable = [
-        'category_id', 'name_en', 'name_ar', 'description_en', 'description_ar', 'price',
-        'discount', 'active'
+        'category_id', 'name_en', 'name_ar', 'description_en', 'description_ar', 'active'
     ];
 
     protected $with = [
         'main_image', 'images'
-    ];
-
-    protected $appends = [
-        'has_discount'
     ];
 
     public function changeStatus()
@@ -67,11 +62,6 @@ class Product extends Model
         ]);
     }
 
-    public function getHasDiscountAttribute()
-    {
-        return (bool)$this->attributes['discount'];
-    }
-
     public function category()
     {
         return $this->belongsTo(Category::class);
@@ -79,11 +69,18 @@ class Product extends Model
 
     public function main_image()
     {
-        return $this->morphOne(Image::class, 'model')->where('type', 'main');
+        return $this->morphOne(Image::class, 'model')
+            ->where('type', 'main');
     }
 
     public function images()
     {
-        return $this->morphMany(Image::class, 'model')->where('type', 'default');
+        return $this->morphMany(Image::class, 'model')
+            ->where('type', 'default');
+    }
+
+    public function sizes()
+    {
+        return $this->hasMany(Size::class);
     }
 }

@@ -18,7 +18,6 @@ class ProductService
                     ->orWhere('name_ar', 'LIKE', '%' . request('search') . '%')
                     ->orWhere('description_en', 'LIKE', '%' . request('search') . '%')
                     ->orWhere('description_ar', 'LIKE', '%' . request('search') . '%')
-                    ->orWhere('price', 'LIKE', '%' . request('search') . '%')
                     ->orWhere('id', 'LIKE', '%' . request('search') . '%');
             });
         })->when(request('order-id'), function ($query) {
@@ -31,10 +30,6 @@ class ProductService
             $query->orderBy('description_en', request('order-description_en'));
         })->when(request('order-description_ar'), function ($query) {
             $query->orderBy('description_ar', request('order-description_ar'));
-        })->when(request('order-price'), function ($query) {
-            $query->orderBy('price', request('order-price'));
-        })->when(request('order-discount'), function ($query) {
-            $query->orderBy('discount', request('order-discount'));
         })->when(request('order-active'), function ($query) {
             $query->orderBy('active', request('order-active'));
         })->paginate($perPage);
@@ -48,10 +43,7 @@ class ProductService
             'name_ar'           => $request->get('name_ar'),
             'description_en'    => $request->get('description_en'),
             'description_ar'    => $request->get('description_ar'),
-            'price'             => $request->get('price'),
-            'active'            => $request->get('active') ?? 0,
-            'discount'          => $request->get('has_discount') ?? 0 ?
-                $request->get('discount') ?? 0 : 0,
+            'active'            => $request->get('active') ?? 0
         ]);
     }
 
@@ -63,10 +55,7 @@ class ProductService
             'name_ar'           => $request->get('name_ar'),
             'description_en'    => $request->get('description_en'),
             'description_ar'    => $request->get('description_ar'),
-            'price'             => $request->get('price'),
-            'active'            => $request->get('active') ?? 0,
-            'discount'          => $request->get('has_discount') ?? 0 ?
-                $request->get('discount') ?? 0 : 0,
+            'active'            => $request->get('active') ?? 0
         ]);
     }
 
