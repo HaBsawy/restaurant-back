@@ -8,6 +8,7 @@ use App\Http\Requests\Dashboard\RemoveRequest;
 use App\Http\Services\RemoveService;
 use App\Models\Addition;
 use App\Models\Category;
+use App\Models\Remove;
 use Illuminate\Http\JsonResponse;
 
 class RemoveController extends Controller
@@ -54,7 +55,7 @@ class RemoveController extends Controller
      */
     public function update(RemoveRequest $request, $category_id, $remove_id): JsonResponse
     {
-        $remove = Addition::where('category_id', $category_id)->find($remove_id);
+        $remove = Remove::where('category_id', $category_id)->find($remove_id);
         if (!$remove) {
             return ResponseHelper::notFound();
         }
@@ -77,7 +78,7 @@ class RemoveController extends Controller
      */
     public function destroy($category_id, $remove_id): JsonResponse
     {
-        $remove = Addition::where('category_id', $category_id)->find($remove_id);
+        $remove = Remove::where('category_id', $category_id)->find($remove_id);
         if (!$remove) {
             return ResponseHelper::notFound();
         }
@@ -99,7 +100,7 @@ class RemoveController extends Controller
      */
     public function changeStatus($category_id, $remove_id): JsonResponse
     {
-        $remove = Addition::where('category_id', $category_id)->find($remove_id);
+        $remove = Remove::where('category_id', $category_id)->find($remove_id);
         if (!$remove) {
             return ResponseHelper::notFound();
         }
