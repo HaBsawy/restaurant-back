@@ -49,4 +49,14 @@ class Category extends Model
     {
         return $this->hasMany(Product::class);
     }
+
+    public function additions()
+    {
+        return $this->hasMany(Addition::class);
+    }
+
+    public function removes()
+    {
+        return $this->hasMany(Remove::class);
+    }
 }

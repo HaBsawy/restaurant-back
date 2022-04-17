@@ -1,9 +1,11 @@
 <?php
 
 use App\Helper\ResponseHelper;
+use App\Http\Controllers\Dashboard\AdditionController;
 use App\Http\Controllers\Dashboard\AuthController;
 use App\Http\Controllers\Dashboard\CategoryController;
 use App\Http\Controllers\Dashboard\ProductController;
+use App\Http\Controllers\Dashboard\RemoveController;
 use App\Http\Controllers\Dashboard\SizeController;
 use Illuminate\Support\Facades\Route;
 
@@ -40,6 +42,14 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         ->name('products.images.destroy')->missing(function () {
             return ResponseHelper::notFound();
         })->scopeBindings();
+    Route::put('categories/{category}/additions/{addition}/change-status', [AdditionController::class, 'changeStatus'])
+        ->name('categories.additions.changeStatus')->missing(function () {
+            return ResponseHelper::notFound();
+        })->scopeBindings();
+    Route::put('categories/{category}/removes/{remove}/change-status', [RemoveController::class, 'changeStatus'])
+        ->name('categories.removes.changeStatus')->missing(function () {
+            return ResponseHelper::notFound();
+        })->scopeBindings();
     Route::put('products/{product}/sizes/{size}/change-status', [SizeController::class, 'changeStatus'])
         ->name('products.sizes.changeStatus')->missing(function () {
             return ResponseHelper::notFound();
@@ -51,6 +61,14 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('products', ProductController::class)->missing(function () {
         return ResponseHelper::notFound();
     });
+    Route::apiResource('categories.additions', AdditionController::class)
+        ->missing(function () {
+            return ResponseHelper::notFound();
+        })->except('show');
+    Route::apiResource('categories.removes', RemoveController::class)
+        ->missing(function () {
+            return ResponseHelper::notFound();
+        })->except('show');
     Route::apiResource('products.sizes', SizeController::class)
         ->missing(function () {
             return ResponseHelper::notFound();
