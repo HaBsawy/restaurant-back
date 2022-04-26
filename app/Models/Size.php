@@ -13,7 +13,14 @@ class Size extends Model
         'name_en', 'name_ar', 'price', 'discount', 'active'
     ];
 
-    public function changeStatus()
+    protected $appends = ['has_discount'];
+
+    public function getHasDiscountAttribute(): string
+    {
+        return $this->attributes['discount'] > 0 ? '1' : '0';
+    }
+
+    public function changeStatus(): bool
     {
         return $this->update([
             'active' => $this->attributes['active'] === 1 ? 0 : 1
