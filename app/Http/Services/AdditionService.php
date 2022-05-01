@@ -15,29 +15,21 @@ class AdditionService
 {
     public static function index(Category $category)
     {
-        return 123;
-//        $perPage = request('per-page', 10);
-//        return Product::when(request('search'), function ($query) {
-//            $query->where(function ($query) {
-//                $query->where('name_en', 'LIKE', '%' . request('search') . '%')
-//                    ->orWhere('name_ar', 'LIKE', '%' . request('search') . '%')
-//                    ->orWhere('description_en', 'LIKE', '%' . request('search') . '%')
-//                    ->orWhere('description_ar', 'LIKE', '%' . request('search') . '%')
-//                    ->orWhere('id', 'LIKE', '%' . request('search') . '%');
-//            });
-//        })->when(request('order-id'), function ($query) {
-//            $query->orderBy('id', request('order-id'));
-//        })->when(request('order-name_en'), function ($query) {
-//            $query->orderBy('name_en', request('order-name_en'));
-//        })->when(request('order-name_ar'), function ($query) {
-//            $query->orderBy('name_ar', request('order-name_ar'));
-//        })->when(request('order-description_en'), function ($query) {
-//            $query->orderBy('description_en', request('order-description_en'));
-//        })->when(request('order-description_ar'), function ($query) {
-//            $query->orderBy('description_ar', request('order-description_ar'));
-//        })->when(request('order-active'), function ($query) {
-//            $query->orderBy('active', request('order-active'));
-//        })->paginate($perPage);
+        return Addition::where('category_id', $category->id)->when(request('search'), function ($query) {
+            $query->where(function ($query) {
+                $query->where('name_en', 'LIKE', '%' . request('search') . '%')
+                    ->orWhere('name_ar', 'LIKE', '%' . request('search') . '%')
+                    ->orWhere('id', 'LIKE', '%' . request('search') . '%');
+            });
+        })->when(request('order-id'), function ($query) {
+            $query->orderBy('id', request('order-id'));
+        })->when(request('order-name_en'), function ($query) {
+            $query->orderBy('name_en', request('order-name_en'));
+        })->when(request('order-name_ar'), function ($query) {
+            $query->orderBy('name_ar', request('order-name_ar'));
+        })->when(request('order-active'), function ($query) {
+            $query->orderBy('active', request('order-active'));
+        })->get();
     }
 
     public static function create(Category $category, AdditionRequest $request)
